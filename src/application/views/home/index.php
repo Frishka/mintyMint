@@ -1,0 +1,1 @@
+<h2>Hi, <?= $session['username']?>!</h2>
