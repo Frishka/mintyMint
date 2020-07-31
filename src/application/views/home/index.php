@@ -20,6 +20,9 @@
                         class="btn btn-primary add-category m-3">
                     <span class="icon expand-icon glyphicon glyphicon-plus"></span> New Category
                 </button>
+                <nav aria-label="Page navigation example">
+                    <?php echo $links; ?>
+                </nav>
             </ul>
         </div>
     </div>

@@ -26,6 +26,12 @@
                     <td><?= $category->desc?></td>
                 </tr>
             </table>
+            <h3 class="mb-3">Category children</h3>
+            <!--Выводим только родительские комментарии parent_id = 0 -->
+            <?php $this->view('components/_category', ['categories' => $children]) ?>
+
+            <?php $this->view('components/_modalAddCategory')?>
+            <?php $this->view('components/_modalEditCategory')?>
         </div>
     </div>
 </div>

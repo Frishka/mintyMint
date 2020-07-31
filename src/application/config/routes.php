@@ -60,4 +60,6 @@ $route['category/add'] = 'Category_controller/add';
 $route['category/delete'] = 'Category_controller/delete';
 $route['category/edit'] = 'Category_controller/edit';
 $route['category/show/(:num)'] = 'Category_controller/show/$1';
+$route['home'] = 'Category_controller/index';
+$route['home/(:num)'] = 'Category_controller/index';
 
