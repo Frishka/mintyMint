@@ -22,14 +22,18 @@ class Category_controller extends MY_Controller
 
         $this->data['title'] = 'Home Page';
 
-        $options = $this->category->get_options();
-        $options[0] = 'No parent';
-
-        $this->data['options'] = $options;
+        $this->data['options'] = $this->get_options();
 
         $this->View('home/index', $this->data);
     }
 
+    private function get_options()
+    {
+        $options = $this->category->get_options();
+        $options[0] = 'No parent';
+
+        return $options;
+    }
     public function add()
     {
         $data = $this->input->post();
@@ -121,6 +125,8 @@ class Category_controller extends MY_Controller
         $children = $this->search_category($categories, $id);
 
         $this->data['children'] = $children;
+
+        $this->data['options'] = $this->get_options();
 
         $this->data['category'] = $this->category->get_category_by_id($id)[0];
         $this->View('category/index', $this->data);
