@@ -56,3 +56,8 @@ $route['index'] = 'auth/index';
 $route['login'] = 'auth/login';
 $route['logout'] = 'auth/logout';
 $route['migrate/(:any)'] = 'migrate/$1';
+$route['category/add'] = 'Category_controller/add';
+$route['category/delete'] = 'Category_controller/delete';
+$route['category/edit'] = 'Category_controller/edit';
+$route['category/show/(:num)'] = 'Category_controller/show/$1';
+

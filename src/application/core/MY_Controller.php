@@ -8,7 +8,6 @@ class MY_Controller extends CI_Controller{
     public function __construct()
     {
         parent::__construct();
-//        $this->checkAuth();
         $this->dataView['session'] = $this->session->all_userdata();
     }
 
@@ -22,8 +21,10 @@ class MY_Controller extends CI_Controller{
 
     }
 
-    public function View ($view, $data = []){
+    public function View ($view, $data = [])
+    {
         $this->load->view('templates/header',$this->dataView + $data);
         $this->load->view($view, $this->dataView + $data);
+        $this->load->view('templates/footer');
     }
 }

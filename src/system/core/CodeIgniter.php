@@ -55,7 +55,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @var	string
  *
  */
-	const CI_VERSION = '3.1.11';
+	const CI_VERSION = '3.2.0-dev';
 
 /*
  * ------------------------------------------------------
@@ -79,57 +79,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 	require_once(BASEPATH.'core/Common.php');
 
-
-/*
- * ------------------------------------------------------
- * Security procedures
- * ------------------------------------------------------
- */
-
-if ( ! is_php('5.4'))
-{
-	ini_set('magic_quotes_runtime', 0);
-
-	if ((bool) ini_get('register_globals'))
-	{
-		$_protected = array(
-			'_SERVER',
-			'_GET',
-			'_POST',
-			'_FILES',
-			'_REQUEST',
-			'_SESSION',
-			'_ENV',
-			'_COOKIE',
-			'GLOBALS',
-			'HTTP_RAW_POST_DATA',
-			'system_path',
-			'application_folder',
-			'view_folder',
-			'_protected',
-			'_registered'
-		);
-
-		$_registered = ini_get('variables_order');
-		foreach (array('E' => '_ENV', 'G' => '_GET', 'P' => '_POST', 'C' => '_COOKIE', 'S' => '_SERVER') as $key => $superglobal)
-		{
-			if (strpos($_registered, $key) === FALSE)
-			{
-				continue;
-			}
-
-			foreach (array_keys($$superglobal) as $var)
-			{
-				if (isset($GLOBALS[$var]) && ! in_array($var, $_protected, TRUE))
-				{
-					$GLOBALS[$var] = NULL;
-				}
-			}
-		}
-	}
-}
-
-
 /*
  * ------------------------------------------------------
  *  Define a custom error handler so we can log PHP errors
@@ -148,7 +97,7 @@ if ( ! is_php('5.4'))
  * The subclass prefix allows CI to know if a core class is
  * being extended via a library in the local application
  * "libraries" folder. Since CI allows config items to be
- * overridden via data set in the main index.php file,
+ * overridden via data set in the main my_proxy.php file,
  * before proceeding we need to know if a subclass_prefix
  * override exists. If so, we will set this value now,
  * before any classes are loaded
@@ -194,20 +143,6 @@ if ( ! is_php('5.4'))
 
 /*
  * ------------------------------------------------------
- *  Instantiate the hooks class
- * ------------------------------------------------------
- */
-	$EXT =& load_class('Hooks', 'core');
-
-/*
- * ------------------------------------------------------
- *  Is there a "pre_system" hook?
- * ------------------------------------------------------
- */
-	$EXT->call_hook('pre_system');
-
-/*
- * ------------------------------------------------------
  *  Instantiate the config class
  * ------------------------------------------------------
  *
@@ -218,7 +153,7 @@ if ( ! is_php('5.4'))
  */
 	$CFG =& load_class('Config', 'core');
 
-	// Do we have any manually set config items in the index.php file?
+	// Do we have any manually set config items in the my_proxy.php file?
 	if (isset($assign_to_config) && is_array($assign_to_config))
 	{
 		foreach ($assign_to_config as $key => $value)
@@ -226,6 +161,20 @@ if ( ! is_php('5.4'))
 			$CFG->set_item($key, $value);
 		}
 	}
+
+/*
+ * ------------------------------------------------------
+ *  Instantiate the hooks class
+ * ------------------------------------------------------
+ */
+	$EXT =& load_class('Hooks', 'core', $CFG);
+
+/*
+ * ------------------------------------------------------
+ *  Is there a "pre_system" hook?
+ * ------------------------------------------------------
+ */
+	$EXT->call_hook('pre_system');
 
 /*
  * ------------------------------------------------------
@@ -294,14 +243,14 @@ if ( ! is_php('5.4'))
  *  Instantiate the UTF-8 class
  * ------------------------------------------------------
  */
-	$UNI =& load_class('Utf8', 'core');
+	$UNI =& load_class('Utf8', 'core', $charset);
 
 /*
  * ------------------------------------------------------
  *  Instantiate the URI class
  * ------------------------------------------------------
  */
-	$URI =& load_class('URI', 'core');
+	$URI =& load_class('URI', 'core', $CFG);
 
 /*
  * ------------------------------------------------------
@@ -332,14 +281,14 @@ if ( ! is_php('5.4'))
  * Load the security class for xss and csrf support
  * -----------------------------------------------------
  */
-	$SEC =& load_class('Security', 'core');
+	$SEC =& load_class('Security', 'core', $charset);
 
 /*
  * ------------------------------------------------------
  *  Load the Input class and sanitize globals
  * ------------------------------------------------------
  */
-	$IN	=& load_class('Input', 'core');
+	$IN =& load_class('Input', 'core', $SEC);
 
 /*
  * ------------------------------------------------------
